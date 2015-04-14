@@ -12,9 +12,8 @@ angular.module('puElasticInput', []).directive('puElasticInput', function () {
     link: function postLink(scope, element, attrs) {
       var wrapper = angular.element('<div style="position:fixed; top:-999px; left:0;"></div>');
       var mirror = angular.element('<span style="white-space:pre;"></span>');
-      var defaultMaxwidth = element.css('maxWidth') === 'none' ? element.parent().innerWidth() : element.css('maxWidth');
-      element.css('minWidth', attrs.puElasticInputMinwidth || element.css('minWidth'));
-      element.css('maxWidth', attrs.puElasticInputMaxwidth || defaultMaxwidth);
+      element.css('minWidth', attrs.puElasticInputMinwidth || '');
+      element.css('maxWidth', attrs.puElasticInputMaxwidth || '');
       angular.forEach([
         'fontFamily',
         'fontSize',
@@ -36,10 +35,10 @@ angular.module('puElasticInput', []).directive('puElasticInput', function () {
       ], function (value) {
         mirror.css(value, element.css(value));
       });
-      angular.element(document.body).append(wrapper.append(mirror));
+      angular.element('body').append(wrapper.append(mirror));
       function update() {
         mirror.text(element.val() || attrs.placeholder);
-        element.css('width', mirror.prop('offsetWidth') + 10 + 'px');
+        element.css('width', mirror.outerWidth() + 1);
       }
       update();
       if (attrs.ngModel) {
@@ -51,7 +50,7 @@ angular.module('puElasticInput', []).directive('puElasticInput', function () {
           update();
         });
       }
-      scope.$on('$destroy', function() {
+      scope.$on('$destroy', function () {
         wrapper.remove();
       });
     }
